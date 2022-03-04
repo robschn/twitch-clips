@@ -43,6 +43,7 @@ func getVidClips(c *gundyr.Helix, username string) []string {
 		log.Fatal(err)
 	}
 
+	// grab raw clip data from user ID
 	clips, err := c.GetAllClips(userID, "")
 	if err != nil {
 		log.Fatal(err)
@@ -53,6 +54,7 @@ func getVidClips(c *gundyr.Helix, username string) []string {
 
 	for _, v := range clips {
 
+		// direct video links are not available, but we can extract it from ThumbnailURL
 		if strings.Contains(v.ThumbnailURL, "AT-cm%") {
 			splitURL := strings.Split(v.ThumbnailURL, "-preview-")
 
