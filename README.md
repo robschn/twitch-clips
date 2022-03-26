@@ -1,2 +1,2 @@
 # twitch-clips
-Grab twitch clips are expose a URL for OBS
+Grab twitch clips and expose a URL for OBS
