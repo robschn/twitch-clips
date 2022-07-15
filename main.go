@@ -1,10 +1,11 @@
 package main
 
 import (
+	"bufio"
 	"fmt"
-	"log"
 	"os"
 	"strings"
+	"time"
 
 	"github.com/kelr/gundyr"
 )
@@ -17,7 +18,32 @@ func main() {
 	// grab video clips URL
 	vidURLs := getVidClips(session, "ohgustie")
 
-	fmt.Printf("vidURLs: %v\n", vidURLs)
+	printFileM3U(vidURLs)
+}
+
+func printFileM3U(vidArray []string) {
+
+	const timeLayout = "01-02-2006"
+
+	timeStamp := time.Now().Format(timeLayout)
+	fileName := fmt.Sprintf("twitch-clips-%s.m3u", timeStamp)
+
+	file, err := os.Create(fileName)
+
+	check(err)
+
+	defer file.Close()
+
+	w := bufio.NewWriter(file)
+	for _, line := range vidArray {
+		fmt.Fprintln(w, line)
+	}
+}
+
+func check(e error) {
+	if e != nil {
+		panic(e)
+	}
 }
 
 func auth(clientID string, clientSecret string) *gundyr.Helix {
@@ -28,9 +54,7 @@ func auth(clientID string, clientSecret string) *gundyr.Helix {
 	}
 
 	c, err := gundyr.NewHelix(cfg)
-	if err != nil {
-		log.Fatal(err)
-	}
+	check(err)
 
 	return c
 }
@@ -39,15 +63,11 @@ func getVidClips(c *gundyr.Helix, username string) []string {
 
 	// convert username to user ID
 	userID, err := c.UserToID(username)
-	if err != nil {
-		log.Fatal(err)
-	}
+	check(err)
 
 	// grab raw clip data from user ID
 	clips, err := c.GetAllClips(userID, "")
-	if err != nil {
-		log.Fatal(err)
-	}
+	check(err)
 
 	// initialize video URL slice
 	vidURLs := []string{}
@@ -64,3 +84,5 @@ func getVidClips(c *gundyr.Helix, username string) []string {
 	}
 	return vidURLs
 }
+
+// vlc https://clips-media-assets2.twitch.tv/AT-cm%7C1239136642.mp4 --live-caching=10 --sout '#transcode{vcodec=mp2v,vb=256,acodec=ne}:std{access=udp{caching=10},mux=raw,dst=localhost:8081}'
