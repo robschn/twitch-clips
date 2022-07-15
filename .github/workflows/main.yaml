@@ -3,7 +3,7 @@ name: Upload to GCS every Wednesday
 on:
   push:
     branches: [ main ]
-  # schedule: 5 20 * * wed
+  schedule: 5 20 * * wed
 
 jobs:
   build:
@@ -17,8 +17,8 @@ jobs:
 
       - name: "build and run"
         env:
-          TWITCH_ID: 4sqakujlu7mfvmr414g3ikm1aj2vtk
-          TWITCH_SECRET: 2ch20nzr1tr9w0rvzd1x5vx2iiymh1
+          TWITCH_ID: ${{ secrets.TWITCH_ID }}
+          TWITCH_SECRET: ${{ secrets.TWITCH_SECRET }}
         run: |
           go install
           go run .
