@@ -3,7 +3,8 @@ name: Upload to GCS every Wednesday
 on:
   push:
     branches: [ main ]
-  schedule: 5 20 * * wed
+  schedule:
+    - cron: '5 20 * * wed'
 
 jobs:
   build:
