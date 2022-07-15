@@ -1,11 +1,8 @@
 package main
 
 import (
-	"bufio"
-	"fmt"
 	"os"
 	"strings"
-	"time"
 
 	"github.com/kelr/gundyr"
 )
@@ -24,20 +21,16 @@ func main() {
 
 func printFileM3U(vidArray []string) {
 
-	const timeLayout = "01-02-2006"
-
-	timeStamp := time.Now().Format(timeLayout)
-	fileName := fmt.Sprintf("twitch-clips-%s.m3u", timeStamp)
-
-	file, err := os.Create(fileName)
+	f, err := os.Create("twitch.m3u")
 
 	check(err)
 
-	defer file.Close()
+	// remember to close the file
+	defer f.Close()
 
-	w := bufio.NewWriter(file)
 	for _, line := range vidArray {
-		fmt.Fprintln(w, line)
+		_, err := f.WriteString(line + "\n")
+		check(err)
 	}
 }
 
@@ -86,5 +79,3 @@ func getVidClips(c *gundyr.Helix, username string) []string {
 
 	return vidURLs
 }
-
-// vlc https://clips-media-assets2.twitch.tv/AT-cm%7C1239136642.mp4 --live-caching=10 --sout '#transcode{vcodec=mp2v,vb=256,acodec=ne}:std{access=udp{caching=10},mux=raw,dst=localhost:8081}'
