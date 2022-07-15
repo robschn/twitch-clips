@@ -3,7 +3,6 @@ module twitch-clips
 go 1.17
 
 require (
-	github.com/adrg/libvlc-go/v3 v3.1.5 // indirect
 	github.com/golang/protobuf v1.4.2 // indirect
 	github.com/google/go-querystring v1.0.0 // indirect
 	github.com/kelr/gundyr v0.2.8 // indirect

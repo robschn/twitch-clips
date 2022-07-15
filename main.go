@@ -21,7 +21,9 @@ func main() {
 
 func printFileM3U(vidArray []string) {
 
-	f, err := os.Create("twitch.m3u")
+	// create clips dir
+	os.Mkdir("clips/", 0770)
+	f, err := os.Create("clips/twitch.m3u")
 
 	check(err)
 
