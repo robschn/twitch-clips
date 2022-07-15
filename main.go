@@ -1,8 +1,10 @@
 package main
 
 import (
+	"math/rand"
 	"os"
 	"strings"
+	"time"
 
 	"github.com/kelr/gundyr"
 )
@@ -78,6 +80,10 @@ func getVidClips(c *gundyr.Helix, username string) []string {
 			vidURLs = append(vidURLs, splitURL[0]+".mp4")
 		}
 	}
+
+	// shuffle vidURLs
+	rand.Seed(time.Now().UnixNano())
+	rand.Shuffle(len(vidURLs), func(i, j int) { vidURLs[i], vidURLs[j] = vidURLs[j], vidURLs[i] })
 
 	return vidURLs
 }
