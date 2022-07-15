@@ -18,6 +18,7 @@ func main() {
 	// grab video clips URL
 	vidURLs := getVidClips(session, "ohgustie")
 
+	// print to m3u file
 	printFileM3U(vidURLs)
 }
 
@@ -82,6 +83,7 @@ func getVidClips(c *gundyr.Helix, username string) []string {
 			vidURLs = append(vidURLs, splitURL[0]+".mp4")
 		}
 	}
+
 	return vidURLs
 }
 
