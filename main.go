@@ -24,7 +24,12 @@ func main() {
 	for _, userID := range userIDs {
 
 		// grab video clips URL
-		vidURLs := getVidClips(session, userID)
+		vidURLs, err := getVidClips(session, userID)
+
+		// if error then skip the user and move on
+		if err != nil {
+			continue
+		}
 
 		// print to m3u file
 		printFileM3U(vidURLs, userID)
@@ -51,11 +56,13 @@ func auth(clientID string, clientSecret string) *gundyr.Helix {
 	return c
 }
 
-func getVidClips(c *gundyr.Helix, username string) []string {
+func getVidClips(c *gundyr.Helix, username string) ([]string, error) {
 
 	// convert username to user ID
 	userID, err := c.UserToID(username)
-	check(err)
+	if err != nil {
+		return nil, err
+	}
 
 	// grab raw clip data from user ID
 	clips, err := c.GetAllClips(userID, "")
@@ -79,7 +86,7 @@ func getVidClips(c *gundyr.Helix, username string) []string {
 		}
 	}
 
-	return vidURLs
+	return vidURLs, nil
 }
 
 func printFileM3U(vidArray []string, userID string) {
