@@ -6,7 +6,7 @@ on:
     paths:
       - '**.go'
   schedule:
-    - cron: '5 20 * * wed'
+    - cron: '5 20 * * WED'
 
 jobs:
   build:
@@ -22,6 +22,7 @@ jobs:
         env:
           TWITCH_ID: ${{ secrets.TWITCH_ID }}
           TWITCH_SECRET: ${{ secrets.TWITCH_SECRET }}
+          TWITCH_USERS: ${{ secrets.USERS }}
         run: |
           go install
           go run .
