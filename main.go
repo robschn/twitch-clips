@@ -26,7 +26,7 @@ func main() {
 		// grab video clips URL
 		vidURLs, err := getVidClips(session, userID)
 
-		// if error then skip the user and move on
+		// skip if no user found
 		if err != nil {
 			continue
 		}
