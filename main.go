@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"math/rand"
 	"os"
 	"strings"
@@ -11,31 +12,21 @@ import (
 
 func main() {
 
-	// authenticate and grab session
+	// grab secrets from env and auth
 	session := auth(os.Getenv("TWITCH_ID"), os.Getenv("TWITCH_SECRET"))
 
-	// grab video clips URL
-	vidURLs := getVidClips(session, "ohgustie")
+	// grab userIDs from env
+	userIDs := strings.Split(os.Getenv("TWITCH_USERS"), ",")
 
-	// print to m3u file
-	printFileM3U(vidURLs)
-}
+	for _, userID := range userIDs {
 
-func printFileM3U(vidArray []string) {
+		// grab video clips URL
+		vidURLs := getVidClips(session, userID)
 
-	// create clips dir
-	os.Mkdir("clips/", 0770)
-	f, err := os.Create("clips/twitch.m3u")
-
-	check(err)
-
-	// remember to close the file
-	defer f.Close()
-
-	for _, line := range vidArray {
-		_, err := f.WriteString(line + "\n")
-		check(err)
+		// print to m3u file
+		printFileM3U(vidURLs, userID)
 	}
+
 }
 
 func check(e error) {
@@ -67,13 +58,17 @@ func getVidClips(c *gundyr.Helix, username string) []string {
 	clips, err := c.GetAllClips(userID, "")
 	check(err)
 
+	// shuffle vidURLs
+	rand.Seed(time.Now().UnixNano())
+	rand.Shuffle(len(clips), func(i, j int) { clips[i], clips[j] = clips[j], clips[i] })
+
 	// initialize video URL slice
 	vidURLs := []string{}
 
-	for _, v := range clips {
-
+	// only need the first 25 links
+	for _, v := range clips[:25] {
 		// direct video links are not available, but we can extract it from ThumbnailURL
-		if strings.Contains(v.ThumbnailURL, "AT-cm%") {
+		if strings.Contains(v.ThumbnailURL, "-preview-") {
 			splitURL := strings.Split(v.ThumbnailURL, "-preview-")
 
 			// base URL will be the first element, add .mp4
@@ -81,9 +76,26 @@ func getVidClips(c *gundyr.Helix, username string) []string {
 		}
 	}
 
-	// shuffle vidURLs
-	rand.Seed(time.Now().UnixNano())
-	rand.Shuffle(len(vidURLs), func(i, j int) { vidURLs[i], vidURLs[j] = vidURLs[j], vidURLs[i] })
-
 	return vidURLs
+}
+
+func printFileM3U(vidArray []string, userID string) {
+
+	// create clips dir
+	os.Mkdir("clips/", 0770)
+
+	// create clips filepath
+	filePath := fmt.Sprintf("clips/%s.m3u", userID)
+	f, err := os.Create(filePath)
+
+	check(err)
+
+	// remember to close the file
+	defer f.Close()
+
+	// write URLs to the file
+	for _, line := range vidArray {
+		_, err := f.WriteString(line + "\n")
+		check(err)
+	}
 }
