@@ -13,9 +13,12 @@ import (
 func main() {
 
 	// grab secrets from env and auth
+	// export TWITCH_ID=xxxxx
+	// export TWITCH_SECRET=xxxxx
 	session := auth(os.Getenv("TWITCH_ID"), os.Getenv("TWITCH_SECRET"))
 
 	// grab userIDs from env
+	// export TWITCH_USER="user1,user2,user3"
 	userIDs := strings.Split(os.Getenv("TWITCH_USERS"), ",")
 
 	for _, userID := range userIDs {
