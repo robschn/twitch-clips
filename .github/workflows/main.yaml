@@ -22,7 +22,7 @@ jobs:
         env:
           TWITCH_ID: ${{ secrets.TWITCH_ID }}
           TWITCH_SECRET: ${{ secrets.TWITCH_SECRET }}
-          TWITCH_USERS: ${{ secrets.USERS }}
+          TWITCH_USERS: ${{ secrets.TWITCH_USERS }}
         run: |
           go install
           go run .
