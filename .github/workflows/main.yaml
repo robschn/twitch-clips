@@ -3,8 +3,8 @@ name: Upload to GCS every Wednesday
 on:
   push:
     branches: [ main ]
-    paths:
-      - '**.go'
+    # paths:
+    #   - '**.go'
   schedule:
     - cron: '5 20 * * WED'
 
@@ -27,6 +27,9 @@ jobs:
           go install
           go run .
 
+      - run: |
+          ls -al
+          pwd
 
       - id: "auth"
         name: "Authenticate to Google Cloud"
@@ -39,4 +42,3 @@ jobs:
         with:
           path: "clips/"
           destination: "www.ohgustie.com/clips/"
-          parent: false
