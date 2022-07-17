@@ -38,3 +38,4 @@ jobs:
         with:
           path: "clips/"
           destination: "www.ohgustie.com/clips/"
+          parent: false
