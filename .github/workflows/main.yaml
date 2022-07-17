@@ -3,8 +3,8 @@ name: Upload to GCS every Wednesday
 on:
   push:
     branches: [ main ]
-    # paths:
-    #   - '**.go'
+    paths:
+      - '**.go'
   schedule:
     - cron: '5 20 * * WED'
 
@@ -18,7 +18,7 @@ jobs:
         with:
           go-version: '>=1.17.0'
 
-      - name: "build and run"
+      - name: "Build and run"
         env:
           TWITCH_ID: ${{ secrets.TWITCH_ID }}
           TWITCH_SECRET: ${{ secrets.TWITCH_SECRET }}
@@ -26,11 +26,6 @@ jobs:
         run: |
           go install
           go run .
-
-      - run: |
-          echo $TWICH_USERS
-          ls -al
-          pwd
 
       - id: "auth"
         name: "Authenticate to Google Cloud"
