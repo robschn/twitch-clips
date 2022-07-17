@@ -28,6 +28,7 @@ jobs:
           go run .
 
       - run: |
+          echo $TWICH_USERS
           ls -al
           pwd
 
